@@ -6,185 +6,59 @@
     <title>Tableau de Croix - Famille</title>
     <style>
         :root {
-            --primary: #0e5b5b;
-            --bg: #f4f4f9;
-            --dt-color: #b2ebf2;
-            --mt-color: #c8e6c9;
-            --lv-color: #ffe0b2;
-            --pl-color: #d1c4e9;
-            --au-color: #ffcdd2;
-            --text: #333;
+            --primary: #0e5b5b; --bg: #f4f4f9;
+            --dt-color: #b2ebf2; --mt-color: #c8e6c9;
+            --lv-color: #ffe0b2; --pl-color: #d1c4e9; --au-color: #ffcdd2;
         }
-
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: var(--bg);
-            margin: 0;
-            padding: 20px;
-            color: var(--text);
-        }
-
-        /* Message d'erreur */
-        #error-banner {
-            display: none;
-            background-color: #ff5252;
-            color: white;
-            padding: 15px;
-            border-radius: 10px;
-            margin-bottom: 20px;
-            text-align: center;
-            font-weight: bold;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.2);
-        }
-
-        /* Écran de connexion */
-        #login-screen {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            min-height: 80vh;
-        }
-
-        .user-btn {
-            background: white;
-            border: 2px solid var(--primary);
-            color: var(--primary);
-            padding: 15px 40px;
-            margin: 10px;
-            border-radius: 25px;
-            font-size: 1.2rem;
-            font-weight: bold;
-            cursor: pointer;
-            width: 80%;
-            max-width: 300px;
-            text-align: center;
-        }
-
-        /* Tableau (caché au début) */
-        #app-screen {
-            display: none;
-            max-width: 600px;
-            margin: 0 auto;
-        }
-
-        .header-card {
-            background-color: var(--primary);
-            color: white;
-            padding: 15px;
-            border-radius: 15px 15px 0 0;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .grid-container {
-            background: white;
-            border: 1px solid #ddd;
-            border-radius: 0 0 15px 15px;
-            padding: 10px;
-        }
-
-        .task-row {
-            display: grid;
-            grid-template-columns: 50px 1fr;
-            margin-bottom: 8px;
-            border-radius: 8px;
-            overflow: hidden;
-        }
-
-        .task-label {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
-            padding: 10px;
-        }
-
-        .checkbox-area {
-            display: grid;
-            grid-template-columns: repeat(5, 1fr);
-            gap: 2px;
-        }
-
-        .box {
-            background: rgba(255,255,255,0.6);
-            border: 1px solid rgba(0,0,0,0.05);
-            height: 45px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.5rem;
-        }
-
+        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); margin: 0; padding: 20px; }
+        #error-banner { display: none; background: #ff5252; color: white; padding: 15px; border-radius: 10px; margin-bottom: 20px; text-align: center; }
+        #login-screen { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 80vh; }
+        .user-btn { background: white; border: 2px solid var(--primary); color: var(--primary); padding: 15px; margin: 10px; border-radius: 25px; font-size: 1.2rem; font-weight: bold; width: 80%; max-width: 300px; text-align: center; cursor: pointer; }
+        #app-screen { display: none; max-width: 600px; margin: 0 auto; }
+        .header-card { background: var(--primary); color: white; padding: 15px; border-radius: 15px 15px 0 0; display: flex; justify-content: space-between; align-items: center; }
+        .grid-container { background: white; border: 1px solid #ddd; border-radius: 0 0 15px 15px; padding: 10px; }
+        .task-row { display: grid; grid-template-columns: 50px 1fr; margin-bottom: 8px; border-radius: 8px; overflow: hidden; }
+        .task-label { display: flex; align-items: center; justify-content: center; font-weight: bold; padding: 10px; }
+        .checkbox-area { display: grid; grid-template-columns: repeat(5, 1fr); gap: 2px; }
+        .box { background: rgba(255,255,255,0.6); border: 1px solid rgba(0,0,0,0.05); height: 45px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; }
         .box.checked::after { content: "✕"; font-weight: bold; }
-
-        .row-dt { background-color: var(--dt-color); }
-        .row-mt { background-color: var(--mt-color); }
-        .row-lv { background-color: var(--lv-color); }
-        .row-pl { background-color: var(--pl-color); }
-        .row-au { background-color: var(--au-color); }
-
-        .reward-section {
-            margin-top: 20px;
-            background: white;
-            padding: 20px;
-            border-radius: 15px;
-            text-align: center;
-        }
-
-        .progress-bar {
-            height: 20px;
-            background: #eee;
-            border-radius: 10px;
-            margin: 10px 0;
-            overflow: hidden;
-        }
-
-        .progress-fill {
-            height: 100%;
-            background: var(--primary);
-            width: 0%;
-            transition: width 0.5s;
-        }
+        .row-dt { background: var(--dt-color); } .row-mt { background: var(--mt-color); } .row-lv { background: var(--lv-color); } .row-pl { background: var(--pl-color); } .row-au { background: var(--au-color); }
+        .reward-section { margin-top: 20px; background: white; padding: 20px; border-radius: 15px; text-align: center; }
+        .progress-bar { height: 20px; background: #eee; border-radius: 10px; margin: 10px 0; overflow: hidden; }
+        .progress-fill { height: 100%; background: var(--primary); width: 0%; transition: width 0.5s; }
+        .cagnotte { font-size: 1.2rem; font-weight: bold; color: #27ae60; margin-bottom: 10px; }
     </style>
 </head>
 <body>
-
-    <div id="error-banner">
-        ⚠️ Erreur de connexion à la base de données.<br>
-        <span id="error-details" style="font-size: 0.8rem; font-weight: normal;"></span>
-    </div>
+    <div id="error-banner">⚠️ Erreur de connexion <br><span id="error-details"></span></div>
 
     <div id="login-screen">
         <h1 style="color:var(--primary)">Tableau de Croix</h1>
-        <p>Choisis ton nom :</p>
         <div class="user-btn" onclick="selectUser('Milan')">MILAN</div>
-        <div class="user-btn" onclick="selectUser('Lize')">LIZE</div>
+        <div class="user-btn" onclick="selectUser('Lise')">LISE</div>
         <div class="user-btn" onclick="selectUser('Suzanne')">SUZANNE</div>
     </div>
 
     <div id="app-screen">
         <div class="header-card">
-            <div id="user-title" style="font-weight:bold">Tableau</div>
-            <div style="background:white; color:var(--primary); padding:2px 8px; border-radius:5px; font-size:0.8rem;">S1</div>
+            <div id="user-title" style="font-weight:bold">TABLEAU</div>
+            <div style="background:white; color:var(--primary); padding:2px 8px; border-radius:5px;">S1</div>
         </div>
         <div class="grid-container" id="grid-container"></div>
-        
         <div class="reward-section">
-            <div>Total : <span id="total-crosses" style="font-weight:bold">0</span> / 15</div>
+            <div class="cagnotte">Ma Cagnotte : <span id="solde-total">0.00</span> €</div>
+            <hr>
+            <div>Croix : <span id="total-crosses" style="font-weight:bold">0</span> / 15</div>
             <div class="progress-bar"><div class="progress-fill" id="prog-fill"></div></div>
             <div id="money-val" style="font-size:1.5rem; font-weight:bold; color:#aaa;">0,00 €</div>
         </div>
-
-        <p style="text-align:center; color:blue; text-decoration:underline; cursor:pointer" onclick="location.reload()">Retour</p>
+        <p style="text-align:center; color:blue; cursor:pointer" onclick="location.reload()">Retour</p>
     </div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
         import { getFirestore, doc, onSnapshot, updateDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-        // CONFIGURATION (Vérifie bien que ces infos sont les tiennes dans GitHub)
         const firebaseConfig = {
             apiKey: "AIzaSyCUMXTUGw8jyJtjidhYSEqE8z07eK7Ca3E",
             authDomain: "tableaufamille-eb08b.firebaseapp.com",
@@ -194,94 +68,52 @@
             appId: "1:739527539477:web:25efa3baf89016a9afc71c"
         };
 
-        // Initialisation avec détection d'erreur
-        let db;
-        try {
-            const app = initializeApp(firebaseConfig);
-            db = getFirestore(app);
-        } catch (e) {
-            showError("Erreur d'initialisation : " + e.message);
-        }
-
-        const categories = [
-            { code: 'DT', color: 'row-dt' },
-            { code: 'MT', color: 'row-mt' },
-            { code: 'LV', color: 'row-lv' },
-            { code: 'PL', color: 'row-pl' },
-            { code: 'AU', color: 'row-au' }
-        ];
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        const cats = [{c:'DT', s:'row-dt'}, {c:'MT', s:'row-mt'}, {c:'LV', s:'row-lv'}, {c:'PL', s:'row-pl'}, {c:'AU', s:'row-au'}];
 
         window.selectUser = (user) => {
             window.currentUser = user;
             document.getElementById('login-screen').style.display = 'none';
             document.getElementById('app-screen').style.display = 'block';
             document.getElementById('user-title').innerText = "TABLEAU DE " + user.toUpperCase();
-            loadData();
-        };
-
-        function loadData() {
-            const userRef = doc(db, "famille", window.currentUser);
             
-            // Écoute en temps réel
-            onSnapshot(userRef, (docSnap) => {
-                if (docSnap.exists()) {
-                    render(docSnap.data());
-                } else {
-                    // Création du profil si vide
-                    const initialData = { DT:[0,0,0,0,0], MT:[0,0,0,0,0], LV:[0,0,0,0,0], PL:[0,0,0,0,0], AU:[0,0,0,0,0] };
-                    setDoc(userRef, initialData);
-                }
-            }, (error) => {
-                showError("Firestore bloqué : Vérifie les 'Rules' dans Firebase. " + error.message);
-            });
-        }
+            onSnapshot(doc(db, "famille", user), (ds) => {
+                if (ds.exists()) render(ds.data());
+                else setDoc(doc(db, "famille", user), { DT:[0,0,0,0,0], MT:[0,0,0,0,0], LV:[0,0,0,0,0], PL:[0,0,0,0,0], AU:[0,0,0,0,0], soldeTotal: 0 });
+            }, (e) => showError(e.message));
+        };
 
         function render(data) {
             const container = document.getElementById('grid-container');
-            container.innerHTML = '';
-            let total = 0;
-
-            categories.forEach(cat => {
-                const row = document.createElement('div');
-                row.className = `task-row ${cat.color}`;
-                row.innerHTML = `<div class="task-label">${cat.code}</div>`;
-                
-                const boxesArea = document.createElement('div');
-                boxesArea.className = 'checkbox-area';
-                
-                const checks = data[cat.code] || [0,0,0,0,0];
-                checks.forEach((val, i) => {
-                    const box = document.createElement('div');
-                    box.className = val ? 'box checked' : 'box';
-                    box.onclick = () => toggle(cat.code, i, checks);
-                    if(val) total++;
-                    boxesArea.appendChild(box);
+            container.innerHTML = ''; let total = 0;
+            cats.forEach(cat => {
+                const row = document.createElement('div'); row.className = `task-row ${cat.s}`;
+                row.innerHTML = `<div class="task-label">${cat.c}</div>`;
+                const area = document.createElement('div'); area.className = 'checkbox-area';
+                const checks = data[cat.c] || [0,0,0,0,0];
+                checks.forEach((v, i) => {
+                    const b = document.createElement('div'); b.className = v ? 'box checked' : 'box';
+                    b.onclick = () => toggle(cat.c, i, checks);
+                    if(v) total++; area.appendChild(b);
                 });
-                
-                row.appendChild(boxesArea);
-                container.appendChild(row);
+                row.appendChild(area); container.appendChild(row);
             });
-
-            // Mise à jour interface
             document.getElementById('total-crosses').innerText = total;
+            document.getElementById('solde-total').innerText = (data.soldeTotal || 0).toFixed(2);
             document.getElementById('prog-fill').style.width = (Math.min(total, 15) / 15 * 100) + "%";
-            
-            const money = document.getElementById('money-val');
-            if(total >= 15) { money.innerText = "5,00 €"; money.style.color = "green"; }
-            else if(total >= 10) { money.innerText = "3,00 €"; money.style.color = "#f1c40f"; }
-            else { money.innerText = "0,00 €"; money.style.color = "#aaa"; }
+            const m = document.getElementById('money-val');
+            if(total >= 15) { m.innerText = "5,00 €"; m.style.color = "green"; }
+            else if(total >= 10) { m.innerText = "3,00 €"; m.style.color = "#f1c40f"; }
+            else { m.innerText = "0,00 €"; m.style.color = "#aaa"; }
         }
 
-        async function toggle(cat, index, array) {
-            const newArray = [...array];
-            newArray[index] = newArray[index] ? 0 : 1;
-            await updateDoc(doc(db, "famille", window.currentUser), { [cat]: newArray });
+        async function toggle(c, i, arr) {
+            const n = [...arr]; n[i] = n[i] ? 0 : 1;
+            await updateDoc(doc(db, "famille", window.currentUser), { [c]: n });
         }
 
-        function showError(msg) {
-            document.getElementById('error-banner').style.display = 'block';
-            document.getElementById('error-details').innerText = msg;
-        }
+        function showError(m) { document.getElementById('error-banner').style.display = 'block'; document.getElementById('error-details').innerText = m; }
     </script>
 </body>
 </html>
