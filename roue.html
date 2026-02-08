@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>La Roue des Tâches</title>
+    <style>
+        body { font-family: 'Segoe UI', sans-serif; text-align: center; background: #f4f4f9; padding: 20px; }
+        .container { max-width: 400px; margin: auto; }
+        #canvas { width: 300px; height: 300px; margin: 20px auto; display: block; }
+        .controls { background: white; padding: 20px; border-radius: 15px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        .player-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; font-weight: bold; }
+        button { background: #0e5b5b; color: white; border: none; padding: 15px 30px; border-radius: 25px; font-size: 1.2rem; cursor: pointer; width: 100%; margin-top: 20px; }
+        button:disabled { background: #ccc; }
+        .winner { font-size: 1.5rem; color: #0e5b5b; font-weight: bold; margin-top: 20px; height: 30px; }
+        .back-link { display: block; margin-top: 30px; color: #888; text-decoration: underline; cursor: pointer; }
+        
+        /* Switch style */
+        .switch { position: relative; display: inline-block; width: 40px; height: 20px; }
+        .switch input { opacity: 0; width: 0; height: 0; }
+        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #ccc; transition: .4s; border-radius: 20px; }
+        input:checked + .slider { background-color: #0e5b5b; }
+        .slider:before { position: absolute; content: ""; height: 16px; width: 16px; left: 2px; bottom: 2px; background-color: white; transition: .4s; border-radius: 50%; }
+        input:checked + .slider:before { transform: translateX(20px); }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>🎡 La Roue</h1>
+    <p>Qui participe ?</p>
+    
+    <div class="controls" id="player-list">
+        <div class="player-row"><span>MILAN</span> <label class="switch"><input type="checkbox" checked value="Milan"><span class="slider"></span></label></div>
+        <div class="player-row"><span>LISE</span> <label class="switch"><input type="checkbox" checked value="Lise"><span class="slider"></span></label></div>
+        <div class="player-row"><span>SUZANNE</span> <label class="switch"><input type="checkbox" checked value="Suzanne"><span class="slider"></span></label></div>
+    </div>
+
+    <canvas id="canvas" width="300" height="300"></canvas>
+    
+    <div class="winner" id="winner-display"></div>
+    
+    <button id="spin-btn" onclick="spin()">FAIRE TOURNER !</button>
+    
+    <span class="back-link" onclick="window.location.href='index.html'">Retour au tableau</span>
+</div>
+
+<script>
+    const canvas = document.getElementById('canvas');
+    const ctx = canvas.getContext('2d');
+    const colors = ['#b2ebf2', '#c8e6c9', '#ffe0b2', '#d1c4e9', '#ffcdd2'];
+    let currentRotation = 0;
+    let isSpinning = false;
+
+    function getActivePlayers() {
+        return Array.from(document.querySelectorAll('input:checked')).map(el => el.value);
+    }
+
+    function drawWheel() {
+        const players = getActivePlayers();
+        const arc = (Math.PI * 2) / (players.length || 1);
+        ctx.clearRect(0, 0, 300, 300);
+
+        players.forEach((name, i) => {
+            const angle = currentRotation + i * arc;
+            ctx.beginPath();
+            ctx.fillStyle = colors[i % colors.length];
+            ctx.moveTo(150, 150);
+            ctx.arc(150, 150, 140, angle, angle + arc);
+            ctx.lineTo(150, 150);
+            ctx.fill();
+            ctx.stroke();
+
+            // Texte
+            ctx.save();
+            ctx.translate(150, 150);
+            ctx.rotate(angle + arc / 2);
+            ctx.textAlign = "right";
+            ctx.fillStyle = "#333";
+            ctx.font = "bold 14px Arial";
+            ctx.fillText(name, 130, 5);
+            ctx.restore();
+        });
+
+        // Curseur
+        ctx.fillStyle = "red";
+        ctx.beginPath();
+        ctx.moveTo(285, 150); ctx.lineTo(300, 140); ctx.lineTo(300, 160);
+        ctx.fill();
+    }
+
+    function spin() {
+        if (isSpinning || getActivePlayers().length < 2) return;
+        isSpinning = true;
+        document.getElementById('winner-display').innerText = "🤔 Suspense...";
+        
+        const duration = 3000;
+        const startTimestamp = performance.now();
+        const extraRounds = 5 + Math.random() * 5;
+        const totalRotation = extraRounds * Math.PI * 2;
+
+        function animate(now) {
+            const elapsed = now - startTimestamp;
+            const progress = Math.min(elapsed / duration, 1);
+            
+            // Ease out cubic
+            const easeOut = 1 - Math.pow(1 - progress, 3);
+            currentRotation = easeOut * totalRotation;
+            
+            drawWheel();
+
+            if (progress < 1) {
+                requestAnimationFrame(animate);
+            } else {
+                isSpinning = false;
+                determineWinner();
+            }
+        }
+        requestAnimationFrame(animate);
+    }
+
+    function determineWinner() {
+        const players = getActivePlayers();
+        const arc = (Math.PI * 2) / players.length;
+        // Calculer quel segment est devant le curseur (à droite, angle 0)
+        let normalizedRotation = (currentRotation % (Math.PI * 2));
+        let index = Math.floor((Math.PI * 2 - normalizedRotation) / arc) % players.length;
+        if(index < 0) index += players.length;
+        
+        document.getElementById('winner-display').innerText = "🎉 " + players[index] + " !";
+    }
+
+    // Mettre à jour la roue quand on change les participants
+    document.getElementById('player-list').addEventListener('change', drawWheel);
+    drawWheel();
+</script>
+
+</body>
+</html>
