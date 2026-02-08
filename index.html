@@ -225,15 +225,15 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
         import { getFirestore, doc, onSnapshot, updateDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
-
-        const firebaseConfig = {
-            apiKey: "AIzaSyCUMXTUGw8jyJtjidhYSEqE8z07eK7Ca3E",
-            authDomain: "tableaufamille-eb08b.firebaseapp.com",
-            projectId: "tableaufamille-eb08b",
-            storageBucket: "tableaufamille-eb08b.appspot.com",
-            messagingSenderId: "739527539477",
-            appId: "1:739527539477:web:25efa3baf89016a9afc71c"
+    const firebaseConfig = {
+        apiKey: window.CONFIG_API_KEY, // Utilise la variable injectée par Netlify
+        authDomain: "tableaufamille-eb08b.firebaseapp.com",
+        projectId: "tableaufamille-eb08b",
+        storageBucket: "tableaufamille-eb08b.appspot.com",
+        messagingSenderId: "739527539477",
+        appId: window.CONFIG_APP_ID // Utilise la variable injectée par Netlify
         };
+        
 
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
@@ -325,4 +325,5 @@
     </script>
 </body>
 </html>
+
 
