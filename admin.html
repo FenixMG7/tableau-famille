@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin - Gestion Famille</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body { font-family: sans-serif; padding: 20px; background: #f0f0f0; }
+        .card { background: white; padding: 15px; border-radius: 10px; margin-bottom: 20px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        h2 { margin-top: 0; color: #0e5b5b; }
+        .btn { padding: 10px; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; }
+        .btn-reset { background: #ff5252; color: white; width: 100%; margin-top: 10px; }
+        .btn-save { background: #0e5b5b; color: white; }
+        input { padding: 8px; width: 80px; font-size: 1rem; }
+    </style>
+</head>
+<body>
+    <h1>Panneau Admin 🛡️</h1>
+    <div id="admin-content">Chargement...</div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getFirestore, collection, onSnapshot, doc, updateDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyCUMXTUGw8jyJtjidhYSEqE8z07eK7Ca3E",
+            authDomain: "tableaufamille-eb08b.firebaseapp.com",
+            projectId: "tableaufamille-eb08b",
+            storageBucket: "tableaufamille-eb08b.appspot.com",
+            messagingSenderId: "739527539477",
+            appId: "1:739527539477:web:25efa3baf89016a9afc71c"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        // Mot de passe simple pour l'accès
+        const password = prompt("Mot de passe admin :");
+        if (password !== "1234") { // Change "1234" par ton code
+            alert("Accès refusé");
+            window.location.href = "index.html";
+        }
+
+        onSnapshot(collection(db, "famille"), (snapshot) => {
+            const container = document.getElementById('admin-content');
+            container.innerHTML = '';
+            
+            snapshot.forEach((userDoc) => {
+                const data = userDoc.data();
+                const id = userDoc.id;
+                
+                // Calculer les croix actuelles
+                let totalCroix = 0;
+                ['DT','MT','LV','PL','AU'].forEach(cat => {
+                    if(data[cat]) totalCroix += data[cat].filter(x => x === 1).length;
+                });
+
+                const card = document.createElement('div');
+                card.className = 'card';
+                card.innerHTML = `
+                    <h2>${id}</h2>
+                    <p>Croix cette semaine : <strong>${totalCroix}</strong></p>
+                    <p>Solde actuel : <input type="number" step="0.5" id="solde-${id}" value="${data.soldeTotal || 0}"> € 
+                       <button class="btn btn-save" onclick="updateSolde('${id}')">Modifier</button></p>
+                    <button class="btn btn-reset" onclick="cloturerSemaine('${id}', ${totalCroix}, ${data.soldeTotal || 0})">
+                        🏁 Clôturer la semaine (+ calcul gain)
+                    </button>
+                `;
+                container.appendChild(card);
+            });
+        });
+
+        // Fonction pour modifier manuellement le solde
+        window.updateSolde = async (id) => {
+            const nouveauSolde = parseFloat(document.getElementById(`solde-${id}`).value);
+            await updateDoc(doc(db, "famille", id), { soldeTotal: nouveauSolde });
+            alert("Solde mis à jour !");
+        };
+
+        // Fonction pour clôturer
+        window.cloturerSemaine = async (id, croix, soldeActuel) => {
+            let gain = 0;
+            if (croix >= 15) gain = 5;
+            else if (croix >= 10) gain = 3;
+
+            if (confirm(`Clôturer pour ${id} ?\nCroix : ${croix}\nGain calculé : ${gain}€\nLe tableau sera vidé.`)) {
+                await updateDoc(doc(db, "famille", id), {
+                    soldeTotal: soldeActuel + gain,
+                    DT: [0,0,0,0,0],
+                    MT: [0,0,0,0,0],
+                    LV: [0,0,0,0,0],
+                    PL: [0,0,0,0,0],
+                    AU: [0,0,0,0,0]
+                });
+                alert("Semaine clôturée avec succès !");
+            }
+        };
+    </script>
+</body>
+</html>
